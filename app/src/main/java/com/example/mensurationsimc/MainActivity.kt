@@ -6,6 +6,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -32,6 +33,9 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.mensurationsimc.ui.theme.Inter
 
 
 class MainActivity : ComponentActivity() {
@@ -58,8 +62,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Header(
-//    onMenuClick: () -> Unit,
-//    onProfileClick: () -> Unit,
+    onMenuClick: () -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -67,6 +71,8 @@ fun Header(
                 text="Mensuivi",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
+                fontFamily = Inter,
+                fontWeight = FontWeight.Bold
             )
         },
         navigationIcon = {
@@ -75,7 +81,7 @@ fun Header(
                 contentDescription = "Menu",
                 modifier = Modifier
                     .padding(8.dp)
-//                    .clickable { onMenuClick() }
+                    .clickable { onMenuClick() }
                         ,
                 tint = Color.Black
                 )
@@ -88,7 +94,7 @@ fun Header(
                     .size(50.dp)
                     .padding(8.dp)
                     .clip(androidx.compose.foundation.shape.CircleShape)
-//                    .clickable { onProfileClick() }
+                    .clickable { onProfileClick() }
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -99,7 +105,10 @@ fun Header(
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier) {
-    Header()
+    Header(
+        onMenuClick = { /*  */ },
+        onProfileClick = { /*  */ }
+    )
 }
 
 @Preview(showBackground = true)
