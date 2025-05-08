@@ -2,36 +2,44 @@ package com.example.mensurationsimc
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mensurationsimc.ui.theme.MensurationsIMCTheme
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.light(Color.Transparent.toArgb(), Color.White.toArgb()),
+        )
         setContent {
             MensurationsIMCTheme(darkTheme = false) {
                 Scaffold(
@@ -57,7 +65,7 @@ fun Header(
         title = {
             Text(
                 text="Mensuivi",
-                modifier = Modifier,
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
             )
         },
@@ -67,29 +75,31 @@ fun Header(
                 contentDescription = "Menu",
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable { //onMenuClick()
-                    },
-                tint = Color.White
+//                    .clickable { onMenuClick() }
+                        ,
+                tint = Color.Black
                 )
         },
         actions = {
-//            Image(
-//                painter = painterResource(id = R.drawable.icon_profile),
-//            )
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background),
+                contentDescription = "Profil",
+                modifier = Modifier
+                    .size(50.dp)
+                    .padding(8.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+//                    .clickable { onProfileClick() }
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary
-            )
+            containerColor = White
+        ),
     )
 }
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier) {
     Header()
-    Text(
-        text = "Home Page",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
