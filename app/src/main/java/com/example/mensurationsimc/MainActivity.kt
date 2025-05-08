@@ -6,6 +6,7 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,8 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.mensurationsimc.ui.theme.Inter
 import com.example.mensurationsimc.ui.theme.MensurationsIMCTheme
 
 class MainActivity : ComponentActivity() {
@@ -53,8 +56,8 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Header(
-//    onMenuClick: () -> Unit,
-//    onProfileClick: () -> Unit,
+    onMenuClick: () -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -62,6 +65,8 @@ fun Header(
                 text="Mensuivi",
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
+                fontFamily = Inter,
+                fontWeight = FontWeight.Bold
             )
         },
         navigationIcon = {
@@ -70,7 +75,7 @@ fun Header(
                 contentDescription = "Menu",
                 modifier = Modifier
                     .padding(8.dp)
-//                    .clickable { onMenuClick() }
+                    .clickable { onMenuClick() }
                         ,
                 tint = Color.Black
                 )
@@ -83,7 +88,7 @@ fun Header(
                     .size(50.dp)
                     .padding(8.dp)
                     .clip(androidx.compose.foundation.shape.CircleShape)
-//                    .clickable { onProfileClick() }
+                    .clickable { onProfileClick() }
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -95,10 +100,9 @@ fun Header(
 @Preview(showBackground = true)
 @Composable
 fun HomePage(modifier: Modifier = Modifier) {
-    Header()
-    Text(
-        text = "Home Page",
-        modifier = modifier
+    Header(
+        onMenuClick = { /*  */ },
+        onProfileClick = { /*  */ }
     )
 }
 
