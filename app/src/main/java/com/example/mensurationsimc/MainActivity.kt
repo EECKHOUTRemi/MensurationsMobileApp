@@ -6,11 +6,15 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,6 +34,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.mensurationsimc.ui.theme.Inter
 import com.example.mensurationsimc.ui.theme.MensurationsIMCTheme
 
@@ -42,12 +47,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             MensurationsIMCTheme(darkTheme = false) {
                 Scaffold(
+                    topBar = {
+                        Header(
+                            onMenuClick = { /*  */ },
+                            onProfileClick = { /*  */ }
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxSize()
                 ) { innerPadding ->
-                    HomePage(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    Column(modifier = Modifier.padding(innerPadding)) {
+                        StatCarousel(
+                            data = mapOf("Poids" to "70kg", "Taille" to "1.75m", "IMC" to "22.9"),
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }
@@ -66,7 +80,7 @@ fun Header(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 fontFamily = Inter,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Black
             )
         },
         navigationIcon = {
@@ -75,8 +89,7 @@ fun Header(
                 contentDescription = "Menu",
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable { onMenuClick() }
-                        ,
+                    .clickable { onMenuClick() },
                 tint = Color.Black
                 )
         },
@@ -99,17 +112,41 @@ fun Header(
 
 @Preview(showBackground = true)
 @Composable
-fun HomePage(modifier: Modifier = Modifier) {
-    Header(
-        onMenuClick = { /*  */ },
-        onProfileClick = { /*  */ }
-    )
+fun StatCarousel(data: Map<String, String>, modifier: Modifier) {
+    LazyRow (modifier = Modifier.padding(16.dp)) {
+        items (data.size) { index ->
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .border(1.dp, Color(0xFFE0E0E0), AbsoluteRoundedCornerShape(10.dp))
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = data.keys.elementAt(index),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .size(width = 200.dp, height = 50.dp),
+                    fontFamily = Inter,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                )
+                Text(
+                    text = data.values.elementAt(index),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .size(width = 200.dp, height = 50.dp),
+                    fontFamily = Inter,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 28.sp,
+                )
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     MensurationsIMCTheme {
-        HomePage()
     }
 }
