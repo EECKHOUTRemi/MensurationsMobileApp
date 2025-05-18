@@ -1,6 +1,7 @@
 package com.example.mensurationsimc
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
@@ -49,8 +50,10 @@ import ir.ehsannarmani.compose_charts.models.GridProperties
 import ir.ehsannarmani.compose_charts.models.Line
 
 class MainActivity : ComponentActivity() {
+    val tag = "MENSUIVI"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i(tag, "Main activity created")
         val taille = 1.55f
         val poidsIMC = mapOf(
             "IMC" to mapOf(
@@ -220,8 +223,8 @@ class MainActivity : ComponentActivity() {
                         Row {
                             StatCarousel(
                                 data = mapOf(
-                                    "Dernier poids en registré" to lastWeight.toString() + " kg",
-                                    "Taille actuelle" to taille.toString() + " m",
+                                    "Dernier poids en registré" to "$lastWeight kg",
+                                    "Taille actuelle" to "$taille m",
                                     "Dernier IMC calculé" to poidsIMC["IMC"]!!.values.last().toString(),
                                 ),
                             )
@@ -254,6 +257,31 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(tag, "Main activity started")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(tag, "Main activity resumed")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.i(tag, "Main activity paused")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.i(tag, "Main activity stopped")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.i(tag, "Main activity destroyed")
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
