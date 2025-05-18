@@ -51,7 +51,7 @@ import ir.ehsannarmani.compose_charts.models.Line
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val taille = 1.55 // taille en mètres
+        val taille = 1.55f
         val poidsIMC = mapOf(
             "IMC" to mapOf(
                 "07/11/2023" to 89.4 / (taille * taille),
@@ -200,8 +200,9 @@ class MainActivity : ComponentActivity() {
                 "08/04/2025" to 103.0
             )
         )
+        val lastWeight = poidsIMC["Poids"]!!.values.last()
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.Transparent.toArgb(), Color.White.toArgb()),
+            statusBarStyle = SystemBarStyle.light(Color.Transparent.toArgb(), White.toArgb()),
         )
         setContent {
             MensurationsIMCTheme(darkTheme = false) {
@@ -218,8 +219,11 @@ class MainActivity : ComponentActivity() {
                     Column(modifier = Modifier.padding(innerPadding)) {
                         Row {
                             StatCarousel(
-                                data = mapOf("Poids" to "70kg", "Taille" to "1.75m", "IMC" to "22.9"),
-                                modifier = Modifier.padding(innerPadding)
+                                data = mapOf(
+                                    "Dernier poids en registré" to lastWeight.toString() + " kg",
+                                    "Taille actuelle" to taille.toString() + " m",
+                                    "Dernier IMC calculé" to poidsIMC["IMC"]!!.values.last().toString(),
+                                ),
                             )
                         }
                         Row (modifier = Modifier
@@ -297,12 +301,12 @@ fun Header(
 }
 
 @Composable
-fun StatCarousel(data: Map<String, String>, modifier: Modifier) {
-    LazyRow (modifier = Modifier.padding(16.dp)) {
+fun StatCarousel(data: Map<String, String>) {
+    LazyRow (modifier = Modifier) {
         items (data.size) { index ->
             Column(
                 modifier = Modifier
-                    .padding(8.dp)
+                    .padding(16.dp)
                     .border(1.dp, Color(0xFFE0E0E0), AbsoluteRoundedCornerShape(10.dp))
                     .padding(16.dp)
             ) {
@@ -316,7 +320,7 @@ fun StatCarousel(data: Map<String, String>, modifier: Modifier) {
                     fontSize = 14.sp,
                 )
                 Text(
-                    text = data.values.elementAt(index),
+                    text = data.values.elementAt(index).toString(),
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
                         .size(width = 200.dp, height = 50.dp),
@@ -334,7 +338,7 @@ fun Chart(data: Map<String, List<Any>>) {
     var colors = listOf(
         SolidColor(Color(0xFFF44336)),
         SolidColor(Color(0xFF3F51B5)),
-        SolidColor(Color(0xFFFFEB3B)),
+        SolidColor(Color(0xFFFFC107)),
         SolidColor(Color(0xFF4CAF50)),
         SolidColor(Color(0xFF9C27B0)),
         SolidColor(Color(0xFF2196F3)),
@@ -356,7 +360,6 @@ fun Chart(data: Map<String, List<Any>>) {
     LineChart(modifier =
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 30.dp)
             .border(1.dp, Color(0xFFE0E0E0), AbsoluteRoundedCornerShape(10.dp))
             .padding(20.dp),
         data = remember { lines },
