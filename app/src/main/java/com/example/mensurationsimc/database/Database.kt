@@ -39,13 +39,13 @@ interface ProfileDao {
 @Dao
 interface MeasurementWeightDao {
     @Query("SELECT * FROM MeasurementWeight")
-    fun getAll(): List<MeasurementWeight>
+    suspend fun getAll(): List<MeasurementWeight>
 
     @Insert
-    fun insert(measurementWeight: MeasurementWeight)
+    suspend fun insert(measurementWeight: MeasurementWeight)
 
     @Delete
-    fun delete(measurementWeight: MeasurementWeight)
+    suspend fun delete(measurementWeight: MeasurementWeight)
 }
 
 @Database(entities = [Profile::class, MeasurementWeight::class], version = 2)

@@ -4,76 +4,73 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.example.mensurationsimc.database.AppDatabase
 import com.example.mensurationsimc.database.Profile
 import com.example.mensurationsimc.ui.theme.MensurationsIMCTheme
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java,
-            "profile-database"
-        )
-            .fallbackToDestructiveMigration(true)
-            .build()
+        enableEdgeToEdge()
 
         lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                val dbDAO = db.profileDao()
-                dbDAO.insert(Profile(name = "John Doe", height = 1.75f))
+            val db = withContext(Dispatchers.IO) {
+                Room.databaseBuilder(
+                    applicationContext,
+                    AppDatabase::class.java,
+                    "profile-database"
+                )
+                    .fallbackToDestructiveMigration(true)
+                    .allowMainThreadQueries()
+                    .build()
             }
 
-            val profiles = withContext(Dispatchers.IO) {
-                db.profileDao().getAll()
-            }
-
-            profiles.forEach {
-                println("Profile: ${it.name}, Height: ${it.height}")
-            }
-        }
-
-        enableEdgeToEdge()
-        setContent {
-            MensurationsIMCTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android ",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+            setContent {
+                val viewModel = ProfileViewModel(db)
+                MensurationsIMCTheme {
+                    ProfileScreen(viewModel = viewModel)
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
+class ProfileViewModel(database: AppDatabase) : ViewModel() {
+    private val profileDao = database.profileDao()
+
+    private val _profiles = MutableStateFlow<List<Profile>>(emptyList())
+    val profiles: StateFlow<List<Profile>> = _profiles
+
+    init {
+        loadProfiles()
+    }
+
+    private fun loadProfiles() {
+        viewModelScope.launch {
+            _profiles.value = profileDao.getAll()
+        }
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    MensurationsIMCTheme {
-        Greeting("Android")
+fun ProfileScreen(viewModel: ProfileViewModel) {
+    val profiles by viewModel.profiles.collectAsState()
+
+    profiles.forEach { profile ->
+        Text(text = "Nom: ${profile.name}, Taille: ${profile.height}")
     }
 }
