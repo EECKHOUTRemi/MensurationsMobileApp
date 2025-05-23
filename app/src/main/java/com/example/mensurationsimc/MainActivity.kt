@@ -35,7 +35,6 @@ class MainActivity : ComponentActivity() {
                     "profile-database"
                 )
                     .fallbackToDestructiveMigration(true)
-                    .allowMainThreadQueries()
                     .build()
             }
 

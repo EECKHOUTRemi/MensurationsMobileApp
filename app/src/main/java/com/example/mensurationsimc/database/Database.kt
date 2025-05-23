@@ -27,13 +27,13 @@ data class MeasurementWeight(
 @Dao
 interface ProfileDao {
     @Query("SELECT * FROM Profile")
-    fun getAll(): List<Profile>
+    suspend fun getAll(): List<Profile>
 
     @Insert
-    fun insert(profile: Profile)
+    suspend fun insert(profile: Profile)
 
     @Delete
-    fun delete(profile: Profile)
+    suspend fun delete(profile: Profile)
 }
 
 @Dao
