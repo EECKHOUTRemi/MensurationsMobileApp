@@ -51,6 +51,12 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.composecharts)
     testImplementation(libs.junit)
+<<<<<<< HEAD
+=======
+    implementation("androidx.room:room-runtime:2.7.1")
+    kapt("androidx.room:room-compiler:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
+>>>>>>> a122a53 (feat: functional menu icon)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
