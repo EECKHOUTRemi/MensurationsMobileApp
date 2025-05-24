@@ -58,6 +58,7 @@ dependencies {
     testImplementation(libs.junit)
     implementation("androidx.room:room-runtime:2.7.1")
     kapt("androidx.room:room-compiler:2.7.1")
+    implementation("androidx.navigation:navigation-compose:2.9.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
