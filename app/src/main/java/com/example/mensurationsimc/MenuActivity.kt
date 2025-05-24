@@ -24,9 +24,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 class MenuActivity : ComponentActivity() {
@@ -41,16 +38,19 @@ class MenuActivity : ComponentActivity() {
             val navController = rememberNavController()
             Scaffold(
                 topBar = {
-                    Header(
-                        navController = navController
+                    BaseHeader(
+                        menuOnClick = { navController.popBackStack() },
+                        profilOnClick = { navController.navigate("profile") }
                     )
                 },
                 modifier = Modifier
                     .fillMaxSize(),
             ) { innerPadding ->
-                MainMenuScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    navController = navController
+                RootNavHost(
+                    navController = navController,
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
             }
         }
@@ -83,44 +83,6 @@ class MenuActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MenuNavHost(navController: NavHostController = rememberNavController(), modifier: Modifier) {
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable(
-            route = "home",
-            arguments = emptyList()
-        ) { innerPadding ->
-            Accueil(
-                modifier = Modifier
-            )
-        }
-        composable(
-            route = "menu",
-            arguments = emptyList() // If there are no arguments
-        ) {
-            MainMenuScreen(navController = navController)
-        }
-
-        composable(
-            route = "profile",
-            arguments = emptyList()
-        ) {
-            ProfileScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White)
-                    .padding(horizontal = 20.dp),
-                navController = navController
-            )
-        }
-
-
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenuScreen(modifier: Modifier = Modifier, navController: NavController) {
@@ -139,20 +101,20 @@ fun MainMenuScreen(modifier: Modifier = Modifier, navController: NavController) 
         modifier = Modifier.padding(top = 150.dp, start = 80.dp)
 
     ) {
-        MenuItem("Accueil")
-        MenuItem("Votre profil")
-        MenuItem("Votre IMC")
-        MenuItem("Votre poids")
-        MenuItem("Vos mensurations")
+        MenuItem(navController, "Accueil", route = "home")
+        MenuItem(navController, "Votre profil", route = "profile")
+        MenuItem(navController, "Votre IMC", route = "bmi")
+        MenuItem(navController, "Votre poids", route = "weight")
+        MenuItem(navController, "Vos mensurations", route = "measurements")
     }
 }
 
 @Composable
-fun MenuItem(text: String) {
+fun MenuItem(navController: NavController, text: String, route: String) {
     Text(
         text = text,
         fontSize = 24.sp,
         modifier = Modifier
-            .clickable { /* TODO: Navigate */ }
+            .clickable { navController.navigate(route.toString()) }
     )
 }
