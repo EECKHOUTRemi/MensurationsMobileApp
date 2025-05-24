@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
-class ProfileActivity : ComponentActivity() {
+class MeasurementsActivity : ComponentActivity() {
     val tag = "MENSUIVI"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +31,8 @@ class ProfileActivity : ComponentActivity() {
             val navController = rememberNavController()
             Scaffold(
                 topBar = {
-                    BaseHeader(
-                        menuOnClick = { navController.navigate("menu") },
-                        profilOnClick = { navController.popBackStack() }
+                    Header(
+                        navController = navController
                     )
                 },
                 modifier = Modifier
@@ -51,6 +50,6 @@ class ProfileActivity : ComponentActivity() {
 }
 
 @Composable
-fun ProfileScreen(navController: NavController, modifier: Modifier) {
-    Text(text = "Profile Screen", modifier = modifier.padding(16.dp))
+fun MeasurementsScreen(navController: NavController, modifier: Modifier) {
+    Text(text = "Measurements Screen", modifier = modifier.padding(16.dp))
 }

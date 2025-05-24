@@ -19,8 +19,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -74,12 +76,19 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize(),
             ) { innerPadding ->
-                RootNavHost(
-                    navController = navController,
+                Column(
                     modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                 )
+                {
+                    RootNavHost(
+                        navController = navController,
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
+                }
+
             }
         }
     }
@@ -325,18 +334,47 @@ fun RootNavHost(navController: NavHostController, modifier: Modifier = Modifier)
                     .padding(horizontal = 20.dp)
             )
         }
+        composable(
+            "bmi",
+            arguments = emptyList()
+        ) {
+            BmiScreen(
+                navController = navController,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+            )
+        }
+        composable(
+            "weight",
+            arguments = emptyList()
+        ) {
+            WeightScreen(
+                navController = navController,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+            )
+        }
+        composable(
+            "measurements",
+            arguments = emptyList()
+        ) {
+            MeasurementsScreen(
+                navController = navController,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 20.dp)
+            )
+        }
     }
-}
-
-@Composable
-fun ProfileScreen(navController: NavController, modifier: Modifier) {
-    TODO("Not yet implemented")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Header(
-    navController: NavController
+fun BaseHeader(
+    menuOnClick: () -> Unit,
+    profilOnClick: () -> Unit,
 ) {
     TopAppBar(
         title = {
@@ -354,7 +392,9 @@ fun Header(
                 contentDescription = "Menu",
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable { navController.navigate("menu") },
+                    .clickable {
+                        menuOnClick()
+                    },
                 tint = Color.Black,
                 )
         },
@@ -366,12 +406,20 @@ fun Header(
                     .size(50.dp)
                     .padding(8.dp)
                     .clip(CircleShape)
-                    .clickable { /* TODO */ }
+                    .clickable { profilOnClick() }
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = White
         ),
+    )
+}
+
+@Composable
+fun Header(navController: NavController){
+    BaseHeader(
+        menuOnClick = { navController.navigate("menu") },
+        profilOnClick = { navController.navigate("profile") }
     )
 }
 
