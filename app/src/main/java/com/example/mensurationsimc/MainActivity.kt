@@ -372,9 +372,8 @@ fun RootNavHost(navController: NavHostController, modifier: Modifier = Modifier)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BaseHeader(
-    menuOnClick: () -> Unit,
-    profilOnClick: () -> Unit,
+fun Header(
+    navController: NavController
 ) {
     TopAppBar(
         title = {
@@ -392,9 +391,7 @@ fun BaseHeader(
                 contentDescription = "Menu",
                 modifier = Modifier
                     .padding(8.dp)
-                    .clickable {
-                        menuOnClick()
-                    },
+                    .clickable { navController.navigate("menu") },
                 tint = Color.Black,
                 )
         },
@@ -406,20 +403,12 @@ fun BaseHeader(
                     .size(50.dp)
                     .padding(8.dp)
                     .clip(CircleShape)
-                    .clickable { profilOnClick() }
+                    .clickable { navController.navigate("profile") }
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = White
         ),
-    )
-}
-
-@Composable
-fun Header(navController: NavController){
-    BaseHeader(
-        menuOnClick = { navController.navigate("menu") },
-        profilOnClick = { navController.navigate("profile") }
     )
 }
 
