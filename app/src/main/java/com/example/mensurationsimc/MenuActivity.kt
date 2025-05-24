@@ -38,9 +38,8 @@ class MenuActivity : ComponentActivity() {
             val navController = rememberNavController()
             Scaffold(
                 topBar = {
-                    BaseHeader(
-                        menuOnClick = { navController.popBackStack() },
-                        profilOnClick = { navController.navigate("profile") }
+                    Header(
+                        navController = navController,
                     )
                 },
                 modifier = Modifier
