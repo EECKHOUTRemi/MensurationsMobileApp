@@ -79,8 +79,7 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier
                         .verticalScroll(rememberScrollState())
-                )
-                {
+                ) {
                     RootNavHost(
                         navController = navController,
                         modifier = Modifier
