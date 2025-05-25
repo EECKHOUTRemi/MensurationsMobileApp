@@ -17,11 +17,13 @@ data class Profile(
 )
 
 @Entity
-data class MeasurementWeight(
+data class Measurement(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val date: Long,
-    val poids: Float,
-    val imc: Float
+    val chest: Float,
+    val hips: Float,
+    val thighs: Float,
+    val waist: Float,
+    val date: String, // Date in format "DD/MM/YYYY"
 )
 
 @Dao
@@ -37,19 +39,19 @@ interface ProfileDao {
 }
 
 @Dao
-interface MeasurementWeightDao {
-    @Query("SELECT * FROM MeasurementWeight")
-    suspend fun getAll(): List<MeasurementWeight>
+interface MeasurementDao {
+    @Query("SELECT * FROM Measurement")
+    suspend fun getAll(): List<Measurement>
 
     @Insert
-    suspend fun insert(measurementWeight: MeasurementWeight)
+    suspend fun insert(Measurement: Measurement)
 
     @Delete
-    suspend fun delete(measurementWeight: MeasurementWeight)
+    suspend fun delete(Measurement: Measurement)
 }
 
-@Database(entities = [Profile::class, MeasurementWeight::class], version = 2)
+@Database(entities = [Profile::class, Measurement::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
-    abstract fun measurementWeightDao(): MeasurementWeightDao
+    abstract fun measurementDao(): MeasurementDao
 }
