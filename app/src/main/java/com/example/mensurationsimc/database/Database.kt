@@ -8,11 +8,14 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import androidx.room.Update
 
 @Entity
 data class Profile(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
+    val lastname: String,
+    val height: Int,
 )
 
 @Entity
@@ -29,7 +32,6 @@ data class Measurement(
 data class WeightBmi(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val weight: Float,
-    val height: Float,
     val bmi: Float,
     val date: String, // Date in format "DD/MM/YYYY"
 )
@@ -41,6 +43,9 @@ interface ProfileDao {
 
     @Insert
     suspend fun insert(profile: Profile)
+
+    @Update
+    suspend fun update(profile: Profile)
 
     @Delete
     suspend fun delete(profile: Profile)
@@ -70,7 +75,7 @@ interface WeightBmiDao {
     suspend fun delete(WeightBmi: WeightBmi)
 }
 
-@Database(entities = [Profile::class, Measurement::class, WeightBmi::class], version = 2)
+@Database(entities = [Profile::class, Measurement::class, WeightBmi::class], version = 6)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
     abstract fun measurementDao(): MeasurementDao
