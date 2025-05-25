@@ -14,6 +14,8 @@ import androidx.room.Update
 data class Profile(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
+    val lastname: String,
+    val height: Int,
 )
 
 @Entity
@@ -30,7 +32,6 @@ data class Measurement(
 data class WeightBmi(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val weight: Float,
-    val height: Float,
     val bmi: Float,
     val date: String, // Date in format "DD/MM/YYYY"
 )
