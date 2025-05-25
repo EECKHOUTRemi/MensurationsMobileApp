@@ -51,5 +51,5 @@ class MeasurementsActivity : ComponentActivity() {
 
 @Composable
 fun MeasurementsScreen(navController: NavController, modifier: Modifier) {
-    Text(text = "Measurements Screen", modifier = modifier.padding(16.dp))
+    Text(text = "Measurement Screen", modifier = modifier.padding(16.dp))
 }
