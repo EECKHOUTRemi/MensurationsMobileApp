@@ -243,6 +243,7 @@ fun MeasurementsForm() {
                 unfocusedIndicatorColor = Color.LightGray
             )
         )
+
         // Bouton Envoyer
         val context = LocalContext.current
         Button(

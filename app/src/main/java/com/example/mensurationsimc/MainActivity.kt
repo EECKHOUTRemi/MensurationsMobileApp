@@ -331,7 +331,6 @@ fun RootNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             arguments = emptyList()
         ) {
             ProfileScreen(
-                navController = navController,
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
