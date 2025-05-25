@@ -49,6 +49,7 @@ interface ProfileDao {
 
     @Delete
     suspend fun delete(profile: Profile)
+
 }
 
 @Dao
