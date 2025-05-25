@@ -1,11 +1,13 @@
 package com.example.mensurationsimc
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -59,6 +61,7 @@ import ir.ehsannarmani.compose_charts.models.Line
 
 class MainActivity : ComponentActivity() {
     val tag = "MENSUIVI"
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "Main activity created")
@@ -79,8 +82,7 @@ class MainActivity : ComponentActivity() {
                 Column(
                     modifier = Modifier
                         .verticalScroll(rememberScrollState())
-                )
-                {
+                ) {
                     RootNavHost(
                         navController = navController,
                         modifier = Modifier
@@ -310,6 +312,7 @@ fun Accueil(modifier: Modifier) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RootNavHost(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
