@@ -8,6 +8,7 @@ import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
+import androidx.room.Update
 
 @Entity
 data class Profile(
@@ -42,8 +43,12 @@ interface ProfileDao {
     @Insert
     suspend fun insert(profile: Profile)
 
+    @Update
+    suspend fun update(profile: Profile)
+
     @Delete
     suspend fun delete(profile: Profile)
+
 }
 
 @Dao
