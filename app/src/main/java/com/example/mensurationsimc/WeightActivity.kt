@@ -28,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,7 +46,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.mensurationsimc.database.AppDatabase
-import com.example.mensurationsimc.database.Measurement
+import com.example.mensurationsimc.database.WeightBmi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -101,7 +102,12 @@ fun SendDataWeight(
 
     try {
         val weightValue = weight.toFloat()
-        val heightValue = height.toFloat()
+        val heightValue = height.toInt()
+        val bmiValue = if (heightValue > 0) {
+            weightValue / ((heightValue / 100) * (heightValue / 100)) // BMI = weight(kg) / (height(m)^2)
+        } else {
+            0f // Avoid division by zero
+        }
 
         val db = Room.databaseBuilder(
             context,
@@ -109,19 +115,24 @@ fun SendDataWeight(
             "mensuivi_db"
         ).build()
 
-        val poids = Poids(
+        val poids = WeightBmi(
             weight = weightValue,
-            height = heightValue,
+            bmi = bmiValue,
             date = dateValue
         )
 
         Thread {
             CoroutineScope(Dispatchers.IO).launch {
-                db.measurementDao().insert(poids)
+                db.weightBmiDao().insert(poids)
+                db.profileDao().update(
+                    db.profileDao().getAll().lastOrNull()?.copy(
+                        height = heightValue
+                    ) ?: return@launch
+                )
             }
         }.start()
 
-        Log.i("MENSUIVI", "Measurements sent: Weight=$weightValue, Height=$heightValue, Date=$dateValue")
+        Log.i("MENSUIVI", "Weight sent: Weight=$weightValue, Height=$heightValue, BMI=$bmiValue, Date=$dateValue")
         Toast.makeText(context, "Données envoyées avec succès", Toast.LENGTH_SHORT).show()
     } catch (e: NumberFormatException) {
         Log.e("MENSUIVI", "Invalid number format", e)
@@ -131,9 +142,27 @@ fun SendDataWeight(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeightForm() {
+fun WeightForm(context: Context) {
+    val db = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java,
+        "mensuivi_db"
+    ).fallbackToDestructiveMigration().build()
+
+    val profileDao = db.profileDao()
+
+    // Champs modifiables
+    var height by remember { mutableStateOf("150") }
+
+    LaunchedEffect(Unit) {
+        val profiles = profileDao.getAll()
+        if (profiles.isNotEmpty()) {
+            val profile = profiles.last()
+            height = profile.height.toString()
+        }
+    }
+
     var weight by remember { mutableStateOf("") }
-    var height by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
 
     Column(
@@ -223,6 +252,7 @@ fun WeightForm() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun WeightScreen(navController: NavController, modifier: Modifier) {
+    val context = LocalContext.current
     Column (
         modifier = modifier.fillMaxSize()
             .padding(20.dp),
@@ -239,7 +269,7 @@ fun WeightScreen(navController: NavController, modifier: Modifier) {
         }
         Row {
             Text(
-                text = "Vos mensurations",
+                text = "Votre poids",
                 modifier = modifier
                     .padding(top = 10.dp ,bottom = 30.dp),
                 textAlign = TextAlign.Center,
@@ -247,6 +277,6 @@ fun WeightScreen(navController: NavController, modifier: Modifier) {
                 fontSize = 15.sp,
             )
         }
-        WeightForm()
+        WeightForm(context)
     }
 }
