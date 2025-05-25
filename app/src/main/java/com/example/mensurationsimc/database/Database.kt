@@ -13,7 +13,6 @@ import androidx.room.RoomDatabase
 data class Profile(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val height: Float, //Height in meters
 )
 
 @Entity
@@ -23,6 +22,15 @@ data class Measurement(
     val hips: Float,
     val thighs: Float,
     val waist: Float,
+    val date: String, // Date in format "DD/MM/YYYY"
+)
+
+@Entity
+data class WeightBmi(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val weight: Float,
+    val height: Float,
+    val bmi: Float,
     val date: String, // Date in format "DD/MM/YYYY"
 )
 
@@ -50,8 +58,21 @@ interface MeasurementDao {
     suspend fun delete(Measurement: Measurement)
 }
 
-@Database(entities = [Profile::class, Measurement::class], version = 2)
+@Dao
+interface WeightBmiDao {
+    @Query("SELECT * FROM WeightBmi")
+    suspend fun getAll(): List<WeightBmi>
+
+    @Insert
+    suspend fun insert(WeightBmi: WeightBmi)
+
+    @Delete
+    suspend fun delete(WeightBmi: WeightBmi)
+}
+
+@Database(entities = [Profile::class, Measurement::class, WeightBmi::class], version = 2)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun profileDao(): ProfileDao
     abstract fun measurementDao(): MeasurementDao
+    abstract fun weightBmiDao(): WeightBmiDao
 }
