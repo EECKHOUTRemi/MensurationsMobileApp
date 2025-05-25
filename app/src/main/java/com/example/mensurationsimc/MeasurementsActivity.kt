@@ -1,11 +1,15 @@
 package com.example.mensurationsimc
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -32,15 +36,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.room.Room
+import com.example.mensurationsimc.database.AppDatabase
+import com.example.mensurationsimc.database.Measurement
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class MeasurementsActivity : ComponentActivity() {
     val tag = "MENSUIVI"
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "Main activity created")
@@ -69,6 +82,60 @@ class MeasurementsActivity : ComponentActivity() {
     }
 }
 
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun SendDataMeasurements(
+    context: Context,
+    chest: String,
+    hips: String,
+    thighs: String,
+    waist: String,
+    date: String? = null
+) {
+    val dateValue = date ?: LocalDate.now().toString()
+
+    if (chest.isEmpty() || hips.isEmpty() || thighs.isEmpty() || waist.isEmpty()) {
+        Log.e("MENSUIVI", "All fields must be filled")
+        Toast.makeText(context, "Les champs marqués d'une astérisque doivent être complétés", Toast.LENGTH_SHORT).show()
+        return
+    }
+
+    try {
+        val chestValue = chest.toFloat()
+        val hipsValue = hips.toFloat()
+        val thighsValue = thighs.toFloat()
+        val waistValue = waist.toFloat()
+
+        val db = Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "mensuivi_db"
+        ).build()
+
+        val measurement = Measurement(
+            chest = chestValue,
+            hips = hipsValue,
+            thighs = thighsValue,
+            waist = waistValue,
+            date = dateValue
+        )
+
+        Thread {
+            CoroutineScope(Dispatchers.IO).launch {
+                db.measurementDao().insert(measurement)
+            }
+        }.start()
+
+        Log.i("MENSUIVI", "Measurements sent: Chest=$chestValue, Hips=$hipsValue, Thighs=$thighsValue, Waist=$waistValue, Date=$dateValue")
+        Toast.makeText(context, "Données envoyées avec succès", Toast.LENGTH_SHORT).show()
+    } catch (e: NumberFormatException) {
+        Log.e("MENSUIVI", "Invalid number format", e)
+        Toast.makeText(context, "Veuillez entrer des valeurs numériques valides", Toast.LENGTH_SHORT).show()
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MeasurementsForm() {
     var chest by remember { mutableStateOf("") }
@@ -92,9 +159,7 @@ fun MeasurementsForm() {
             onValueChange = { chest = it },
             placeholder = { Text(text = "En cm", color = Color.LightGray) },
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 16.dp),
-            singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -111,9 +176,7 @@ fun MeasurementsForm() {
             onValueChange = { waist = it },
             placeholder = { Text(text = "En cm", color = Color.LightGray) },
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 16.dp),
-            singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -130,9 +193,7 @@ fun MeasurementsForm() {
             onValueChange = { hips = it },
             placeholder = { Text(text = "En cm", color = Color.LightGray) },
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 16.dp),
-            singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -149,9 +210,7 @@ fun MeasurementsForm() {
             onValueChange = { thighs = it },
             placeholder = { Text(text = "En cm", color = Color.LightGray) },
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 16.dp),
-            singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -175,9 +234,7 @@ fun MeasurementsForm() {
             onValueChange = { date = it },
             placeholder = { Text(text = "JJ/MM/AAAA", color = Color.LightGray) },
             modifier = Modifier
-                .fillMaxWidth()
                 .padding(top = 4.dp, bottom = 24.dp),
-            singleLine = true,
             shape = RoundedCornerShape(8.dp),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.White,
@@ -186,10 +243,13 @@ fun MeasurementsForm() {
                 unfocusedIndicatorColor = Color.LightGray
             )
         )
-
         // Bouton Envoyer
+        val context = LocalContext.current
         Button(
-            onClick = { /* Action d'envoi */ },
+            onClick = {
+                SendDataMeasurements(context, chest, hips, thighs, waist, date)
+                chest = ""; hips = ""; thighs = ""; waist = ""; date = ""
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -201,6 +261,7 @@ fun MeasurementsForm() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MeasurementsScreen(navController: NavController, modifier: Modifier) {
     Column (
