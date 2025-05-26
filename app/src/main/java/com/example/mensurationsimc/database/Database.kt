@@ -2,7 +2,6 @@ package com.example.mensurationsimc.database
 
 import androidx.room.Dao
 import androidx.room.Database
-import androidx.room.Delete
 import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
@@ -41,14 +40,17 @@ interface ProfileDao {
     @Query("SELECT * FROM Profile")
     suspend fun getAll(): List<Profile>
 
+    @Query("SELECT height FROM Profile")
+    suspend fun getHeight(): Int?
+
     @Insert
     suspend fun insert(profile: Profile)
 
     @Update
     suspend fun update(profile: Profile)
 
-    @Delete
-    suspend fun delete(profile: Profile)
+    @Query("DELETE FROM Profile")
+    suspend fun clearAll()
 
 }
 
@@ -60,8 +62,8 @@ interface MeasurementDao {
     @Insert
     suspend fun insert(Measurement: Measurement)
 
-    @Delete
-    suspend fun delete(Measurement: Measurement)
+    @Query("DELETE FROM Measurement")
+    suspend fun clearAll()
 }
 
 @Dao
@@ -72,8 +74,8 @@ interface WeightBmiDao {
     @Insert
     suspend fun insert(WeightBmi: WeightBmi)
 
-    @Delete
-    suspend fun delete(WeightBmi: WeightBmi)
+    @Query("DELETE FROM WeightBmi")
+    suspend fun clearAll()
 }
 
 @Database(entities = [Profile::class, Measurement::class, WeightBmi::class], version = 6)

@@ -103,11 +103,8 @@ fun SendDataWeight(
     try {
         val weightValue = weight.toFloat()
         val heightValue = height.toInt()
-        val bmiValue = if (heightValue > 0) {
-            weightValue / ((heightValue / 100) * (heightValue / 100)) // BMI = weight(kg) / (height(m)^2)
-        } else {
-            0f // Avoid division by zero
-        }
+        val heightMeters = heightValue.toFloat() / 100f
+        val bmiValue = weightValue / (heightMeters * heightMeters)
 
         val db = Room.databaseBuilder(
             context,

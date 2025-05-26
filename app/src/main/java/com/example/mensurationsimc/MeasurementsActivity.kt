@@ -153,7 +153,7 @@ fun MeasurementsForm() {
             .padding(24.dp)
     ) {
         // Poitrine
-        Text("Poitrine", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text("Poitrine *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         OutlinedTextField(
             value = chest,
             onValueChange = { chest = it },
@@ -170,7 +170,7 @@ fun MeasurementsForm() {
         )
 
         // Taille
-        Text("Taille", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text("Taille *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         OutlinedTextField(
             value = waist,
             onValueChange = { waist = it },
@@ -187,7 +187,7 @@ fun MeasurementsForm() {
         )
 
         // Hanches
-        Text("Hanches", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text("Hanches *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         OutlinedTextField(
             value = hips,
             onValueChange = { hips = it },
@@ -204,7 +204,7 @@ fun MeasurementsForm() {
         )
 
         // Cuisses
-        Text("Cuisses", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text("Cuisses *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         OutlinedTextField(
             value = thighs,
             onValueChange = { thighs = it },
