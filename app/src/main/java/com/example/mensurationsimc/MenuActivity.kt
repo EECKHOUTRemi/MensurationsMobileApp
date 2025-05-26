@@ -1,11 +1,13 @@
 package com.example.mensurationsimc
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 
 class MenuActivity : ComponentActivity() {
     val tag = "MENSUIVI"
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "Main activity created")
@@ -102,7 +105,6 @@ fun MainMenuScreen(modifier: Modifier = Modifier, navController: NavController) 
     ) {
         MenuItem(navController, "Accueil", route = "home")
         MenuItem(navController, "Votre profil", route = "profile")
-        MenuItem(navController, "Votre IMC", route = "bmi")
         MenuItem(navController, "Votre poids", route = "weight")
         MenuItem(navController, "Vos mensurations", route = "measurements")
     }

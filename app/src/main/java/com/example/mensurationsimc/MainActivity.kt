@@ -231,17 +231,6 @@ fun RootNavHost(navController: NavHostController, modifier: Modifier = Modifier)
             )
         }
         composable(
-            "bmi",
-            arguments = emptyList()
-        ) {
-            BmiScreen(
-                navController = navController,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp)
-            )
-        }
-        composable(
             "weight",
             arguments = emptyList()
         ) {
