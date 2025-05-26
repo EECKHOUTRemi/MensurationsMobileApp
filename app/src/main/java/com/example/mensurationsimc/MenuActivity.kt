@@ -1,11 +1,13 @@
 package com.example.mensurationsimc
 
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,6 +33,7 @@ import androidx.navigation.compose.rememberNavController
 
 class MenuActivity : ComponentActivity() {
     val tag = "MENSUIVI"
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.i(tag, "Main activity created")
@@ -48,9 +51,11 @@ class MenuActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize(),
             ) { innerPadding ->
-                MainMenuScreen(
-                    modifier = Modifier.padding(innerPadding),
-                    navController = navController
+                RootNavHost(
+                    navController = navController,
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize()
                 )
             }
         }
@@ -139,20 +144,19 @@ fun MainMenuScreen(modifier: Modifier = Modifier, navController: NavController) 
         modifier = Modifier.padding(top = 150.dp, start = 80.dp)
 
     ) {
-        MenuItem("Accueil")
-        MenuItem("Votre profil")
-        MenuItem("Votre IMC")
-        MenuItem("Votre poids")
-        MenuItem("Vos mensurations")
+        MenuItem(navController, "Accueil", route = "home")
+        MenuItem(navController, "Votre profil", route = "profile")
+        MenuItem(navController, "Votre poids", route = "weight")
+        MenuItem(navController, "Vos mensurations", route = "measurements")
     }
 }
 
 @Composable
-fun MenuItem(text: String) {
+fun MenuItem(navController: NavController, text: String, route: String) {
     Text(
         text = text,
         fontSize = 24.sp,
         modifier = Modifier
-            .clickable { /* TODO: Navigate */ }
+            .clickable { navController.navigate(route.toString()) }
     )
 }
