@@ -1,7 +1,5 @@
 package com.example.mensurationsimc
 
-import androidx.annotation.RequiresApi
-
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.EaseInOutCubic
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -288,7 +287,7 @@ fun Header(
                     .size(50.dp)
                     .padding(8.dp)
                     .clip(CircleShape)
-                    .clickable { /* TODO */ }
+                    .clickable { navController.navigate("profile") }
             )
         },
         colors = TopAppBarDefaults.topAppBarColors(
