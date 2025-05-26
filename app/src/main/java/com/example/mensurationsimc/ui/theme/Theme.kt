@@ -1,6 +1,5 @@
 package com.example.mensurationsimc.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +48,15 @@ fun MensurationsIMCTheme(
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
+
+    //  view = LocalView.current
+    //    if (!view.isInEditMode){
+    //        SideEffect {
+    //            val window = (view.context as Activity).window
+    //            window.statusBarColor = Color.Black.toArgb()
+    //            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+    //
+    //        }
 
     MaterialTheme(
         colorScheme = colorScheme,
