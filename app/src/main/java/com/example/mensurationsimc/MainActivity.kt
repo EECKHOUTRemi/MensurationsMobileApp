@@ -23,8 +23,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.AbsoluteRoundedCornerShape
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -76,7 +78,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         Log.i(tag, "Main activity created")
         enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.Transparent.toArgb(), Color.White.toArgb()),
+            statusBarStyle = SystemBarStyle.light(Color.Transparent.toArgb(), White.toArgb()),
         )
         setContent {
             val navController = rememberNavController()
@@ -89,12 +91,17 @@ class MainActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxSize(),
             ) { innerPadding ->
-                RootNavHost(
-                    navController = navController,
+                Column(
                     modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                )
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    RootNavHost(
+                        navController = navController,
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                    )
+                }
             }
         }
     }
@@ -248,11 +255,6 @@ fun RootNavHost(navController: NavHostController, modifier: Modifier = Modifier)
     }
 }
 
-@Composable
-fun ProfileScreen(navController: NavController, modifier: Modifier) {
-    TODO("Not yet implemented")
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Header(
@@ -328,6 +330,7 @@ fun StatCarousel(data: Map<String, String>) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Chart(data: Map<String, List<Any>>) {
     val colors = listOf(

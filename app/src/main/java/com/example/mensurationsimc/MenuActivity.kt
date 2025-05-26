@@ -88,44 +88,6 @@ class MenuActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun MenuNavHost(navController: NavHostController = rememberNavController(), modifier: Modifier) {
-    NavHost(
-        navController = navController,
-        startDestination = "home"
-    ) {
-        composable(
-            route = "home",
-            arguments = emptyList()
-        ) { innerPadding ->
-            Accueil(
-                modifier = Modifier
-            )
-        }
-        composable(
-            route = "menu",
-            arguments = emptyList() // If there are no arguments
-        ) {
-            MainMenuScreen(navController = navController)
-        }
-
-        composable(
-            route = "profile",
-            arguments = emptyList()
-        ) {
-            ProfileScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(White)
-                    .padding(horizontal = 20.dp),
-                navController = navController
-            )
-        }
-
-
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainMenuScreen(modifier: Modifier = Modifier, navController: NavController) {
