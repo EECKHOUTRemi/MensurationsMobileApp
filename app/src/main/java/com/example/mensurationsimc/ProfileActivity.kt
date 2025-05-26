@@ -168,8 +168,10 @@ fun ProfileScreen(modifier: Modifier = Modifier, context: Context) {
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
         val context = LocalContext.current
+
+        Spacer(modifier = Modifier.height(32.dp))
+
         Button(
             onClick = {
                 message = "Profil enregistré avec succès !"
@@ -179,6 +181,17 @@ fun ProfileScreen(modifier: Modifier = Modifier, context: Context) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Enregistrer")
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+        Button(
+            onClick = {
+                message = "Toutes les données ont été supprimées !"
+                resetDatabase(context = context)
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Supprimer toutes les données")
         }
 
         if (message.isNotEmpty()) {
@@ -232,5 +245,18 @@ fun SendDataProfile(
     } catch (e: NumberFormatException) {
         Log.e("MENSUIVI", "Invalid number format", e)
         Toast.makeText(context, "Veuillez entrer des valeurs numériques valides", Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun resetDatabase(context: Context) {
+    val db = Room.databaseBuilder(
+        context,
+        AppDatabase::class.java,
+        "mensuivi_db"
+    ).build()
+    CoroutineScope(Dispatchers.IO).launch {
+        db.profileDao().clearAll()
+        db.measurementDao().clearAll()
+        db.weightBmiDao().clearAll()
     }
 }
