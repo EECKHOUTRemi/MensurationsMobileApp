@@ -28,7 +28,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,13 +45,13 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.mensurationsimc.database.AppDatabase
-import com.example.mensurationsimc.database.WeightBmi
+import com.example.mensurationsimc.database.Measurement
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class WeightActivity : ComponentActivity() {
+class MeasurementsActivity : ComponentActivity() {
     val tag = "MENSUIVI"
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,25 +85,27 @@ class WeightActivity : ComponentActivity() {
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun SendDataWeight(
+fun SendDataMeasurements(
     context: Context,
-    weight: String,
-    height: String,
+    chest: String,
+    hips: String,
+    thighs: String,
+    waist: String,
     date: String? = null
 ) {
     val dateValue = date ?: LocalDate.now().toString()
 
-    if (weight.isEmpty() || height.isEmpty()) {
+    if (chest.isEmpty() || hips.isEmpty() || thighs.isEmpty() || waist.isEmpty()) {
         Log.e("MENSUIVI", "All fields must be filled")
         Toast.makeText(context, "Les champs marqués d'une astérisque doivent être complétés", Toast.LENGTH_SHORT).show()
         return
     }
 
     try {
-        val weightValue = weight.toFloat()
-        val heightValue = height.toInt()
-        val heightMeters = heightValue.toFloat() / 100f
-        val bmiValue = weightValue / (heightMeters * heightMeters)
+        val chestValue = chest.toFloat()
+        val hipsValue = hips.toFloat()
+        val thighsValue = thighs.toFloat()
+        val waistValue = waist.toFloat()
 
         val db = Room.databaseBuilder(
             context,
@@ -112,24 +113,21 @@ fun SendDataWeight(
             "mensuivi_db"
         ).build()
 
-        val poids = WeightBmi(
-            weight = weightValue,
-            bmi = bmiValue,
+        val measurement = Measurement(
+            chest = chestValue,
+            hips = hipsValue,
+            thighs = thighsValue,
+            waist = waistValue,
             date = dateValue
         )
 
         Thread {
             CoroutineScope(Dispatchers.IO).launch {
-                db.weightBmiDao().insert(poids)
-                db.profileDao().update(
-                    db.profileDao().getAll().lastOrNull()?.copy(
-                        height = heightValue
-                    ) ?: return@launch
-                )
+                db.measurementDao().insert(measurement)
             }
         }.start()
 
-        Log.i("MENSUIVI", "Weight sent: Weight=$weightValue, Height=$heightValue, BMI=$bmiValue, Date=$dateValue")
+        Log.i("MENSUIVI", "Measurements sent: Chest=$chestValue, Hips=$hipsValue, Thighs=$thighsValue, Waist=$waistValue, Date=$dateValue")
         Toast.makeText(context, "Données envoyées avec succès", Toast.LENGTH_SHORT).show()
     } catch (e: NumberFormatException) {
         Log.e("MENSUIVI", "Invalid number format", e)
@@ -139,27 +137,11 @@ fun SendDataWeight(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeightForm(context: Context) {
-    val db = Room.databaseBuilder(
-        context,
-        AppDatabase::class.java,
-        "mensuivi_db"
-    ).fallbackToDestructiveMigration().build()
-
-    val profileDao = db.profileDao()
-
-    // Champs modifiables
-    var height by remember { mutableStateOf("150") }
-
-    LaunchedEffect(Unit) {
-        val profiles = profileDao.getAll()
-        if (profiles.isNotEmpty()) {
-            val profile = profiles.last()
-            height = profile.height.toString()
-        }
-    }
-
-    var weight by remember { mutableStateOf("") }
+fun MeasurementsForm() {
+    var chest by remember { mutableStateOf("") }
+    var hips by remember { mutableStateOf("") }
+    var thighs by remember { mutableStateOf("") }
+    var waist by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }
 
     Column(
@@ -170,12 +152,12 @@ fun WeightForm(context: Context) {
             .background(Color.White, RoundedCornerShape(10.dp))
             .padding(24.dp)
     ) {
-        // Poids
-        Text("Poids *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        // Poitrine
+        Text("Poitrine *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         OutlinedTextField(
-            value = weight,
-            onValueChange = { weight = it },
-            placeholder = { Text(text = "En kg", color = Color.LightGray) },
+            value = chest,
+            onValueChange = { chest = it },
+            placeholder = { Text(text = "En cm", color = Color.LightGray) },
             modifier = Modifier
                 .padding(top = 4.dp, bottom = 16.dp),
             shape = RoundedCornerShape(8.dp),
@@ -190,8 +172,8 @@ fun WeightForm(context: Context) {
         // Taille
         Text("Taille *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
         OutlinedTextField(
-            value = height,
-            onValueChange = { height = it },
+            value = waist,
+            onValueChange = { waist = it },
             placeholder = { Text(text = "En cm", color = Color.LightGray) },
             modifier = Modifier
                 .padding(top = 4.dp, bottom = 16.dp),
@@ -203,6 +185,41 @@ fun WeightForm(context: Context) {
                 unfocusedIndicatorColor = Color.LightGray
             )
         )
+
+        // Hanches
+        Text("Hanches *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        OutlinedTextField(
+            value = hips,
+            onValueChange = { hips = it },
+            placeholder = { Text(text = "En cm", color = Color.LightGray) },
+            modifier = Modifier
+                .padding(top = 4.dp, bottom = 16.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = Color.LightGray,
+                unfocusedIndicatorColor = Color.LightGray
+            )
+        )
+
+        // Cuisses
+        Text("Cuisses *", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        OutlinedTextField(
+            value = thighs,
+            onValueChange = { thighs = it },
+            placeholder = { Text(text = "En cm", color = Color.LightGray) },
+            modifier = Modifier
+                .padding(top = 4.dp, bottom = 16.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = Color.LightGray,
+                unfocusedIndicatorColor = Color.LightGray
+            )
+        )
+
         // Date (optionnelle)
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -231,9 +248,8 @@ fun WeightForm(context: Context) {
         val context = LocalContext.current
         Button(
             onClick = {
-                //changer la database
-                SendDataWeight(context, weight, height, date)
-                weight = ""; height = ""; date = ""
+                SendDataMeasurements(context, chest, hips, thighs, waist, date)
+                chest = ""; hips = ""; thighs = ""; waist = ""; date = ""
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -248,8 +264,7 @@ fun WeightForm(context: Context) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeightScreen(navController: NavController, modifier: Modifier) {
-    val context = LocalContext.current
+fun MeasurementsScreen(navController: NavController, modifier: Modifier) {
     Column (
         modifier = modifier.fillMaxSize()
             .padding(20.dp),
@@ -266,7 +281,7 @@ fun WeightScreen(navController: NavController, modifier: Modifier) {
         }
         Row {
             Text(
-                text = "Votre poids",
+                text = "Vos mensurations",
                 modifier = modifier
                     .padding(top = 10.dp ,bottom = 30.dp),
                 textAlign = TextAlign.Center,
@@ -274,6 +289,6 @@ fun WeightScreen(navController: NavController, modifier: Modifier) {
                 fontSize = 15.sp,
             )
         }
-        WeightForm(context)
+        MeasurementsForm()
     }
 }
