@@ -1,0 +1,14 @@
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches: [main, develop, feat/ci]
+
+jobs:
+    kotlin_quality:
+        runs-on: unbuntu-22.04
+        steps:
+            - uses: actions/checkout@v4
+            - name: "Dire bonjour"
+              run: echo "Hello World"
